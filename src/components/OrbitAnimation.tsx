@@ -20,49 +20,49 @@ const PLANETARY_DATA: Record<string, PlanetData> = {
     orbitRadius: 0.39 * EARTH_ORBIT_RADIUS,
     orbitPeriod: 88,
     size: 0.45 * EARTH_RADIUS,
-    color: "gray",
+    color: "#9f5e26",
   },
   Venus: {
     orbitRadius: 0.72 * EARTH_ORBIT_RADIUS,
     orbitPeriod: 225,
     size: 0.95 * EARTH_RADIUS,
-    color: "yellow",
+    color: "#beb768",
   },
   Earth: {
     orbitRadius: 1 * EARTH_ORBIT_RADIUS,
     orbitPeriod: 365,
     size: EARTH_RADIUS,
-    color: "blue",
+    color: "#11abe9",
   },
   Mars: {
     orbitRadius: 1.52 * EARTH_ORBIT_RADIUS,
     orbitPeriod: 687,
     size: 0.53 * EARTH_RADIUS,
-    color: "red",
+    color: "#cf3921",
   },
   Jupiter: {
     orbitRadius: (5.2 / 2) * EARTH_ORBIT_RADIUS,
     orbitPeriod: 4331,
     size: (11.2 / 2) * EARTH_RADIUS,
-    color: "orange",
+    color: "#c76e2a",
   },
   Saturn: {
     orbitRadius: (9.54 / 2) * EARTH_ORBIT_RADIUS,
     orbitPeriod: 10747,
     size: (9.45 / 2) * EARTH_RADIUS,
-    color: "gold",
+    color: "#e7c194",
   },
   Uranus: {
     orbitRadius: (19.2 / 2) * EARTH_ORBIT_RADIUS,
     orbitPeriod: 30589,
     size: (4.01 / 2) * EARTH_RADIUS,
-    color: "lightblue",
+    color: "#b5e3e3",
   },
   Neptune: {
     orbitRadius: (30.1 / 2) * EARTH_ORBIT_RADIUS,
     orbitPeriod: 59800,
     size: (3.88 / 2) * EARTH_RADIUS,
-    color: "darkblue",
+    color: "#175e9e",
   },
 };
 
@@ -82,9 +82,17 @@ const orbitAnimation = (orbitRadius: number) => keyframes`
 const Sun = styled.div`
   width: ${SUN_RADIUS}px;
   height: ${SUN_RADIUS}px;
-  background: yellow;
+  background: radial-gradient(
+    ellipse at center,
+    #ffd000 1%,
+    #f9b700 39%,
+    #f9b700 39%,
+    #e06317 100%
+  );
   border-radius: 50%;
   box-shadow: 0 0 50px rgba(255, 223, 0, 0.8);
+  box-shadow: 0 0 10px 2px rgba(255, 107, 0, 0.4),
+    0 0 22px 11px rgba(255, 203, 0, 0.13);
 `;
 
 const Planet = styled.div<{ size: number; color: string }>`
@@ -218,6 +226,7 @@ const ControlPanel = styled.div`
   flex-direction: column;
   gap: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.2);
 `;
 
 const ControlButton = styled.button`
@@ -238,9 +247,55 @@ const ControlButton = styled.button`
   }
 `;
 
-export default function OrbitAnimation() {
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+`;
+
+const ModalContent = styled.div`
+  background: #000000b3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #242424;
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  width: 50%;
+  min-width: 400px;
+  max-width: 500px;
+`;
+
+const ModalButton = styled.button`
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+
+  &:hover {
+    background: #444;
+  }
+`;
+
+const OrbitAnimation = () => {
   const [scale, setScale] = React.useState(1.6);
   const [duration, setDuration] = React.useState(100);
+  const [showModal, setShowModal] = React.useState(true); // State to show/hide modal
 
   const zoomIn = () => setScale((prev) => prev + 0.05);
   const zoomOut = () => {
@@ -248,13 +303,12 @@ export default function OrbitAnimation() {
   };
 
   const animateScaleOut = () => {
-    setScale(1.6);
     let currentScale = scale;
     const interval = setInterval(() => {
       if (currentScale <= 0.001) {
         clearInterval(interval);
       } else {
-        currentScale = Math.max(currentScale - 0.02, 0.001); // Decrease scale
+        currentScale = Math.max(currentScale - 0.02, 0.001);
         setScale(currentScale);
       }
     }, duration);
@@ -270,11 +324,52 @@ export default function OrbitAnimation() {
 
   return (
     <>
+      {/* Welcome Modal */}
+      {showModal && (
+        <ModalOverlay>
+          <ModalContent>
+            <h1 className="text-3xl">
+              Welcome to <strong>cosma</strong>.
+            </h1>
+            <br />
+            <p className="text-sm font-semibold">
+              Our place in the universe is incredibly unpriviledged and mundane
+              (at least according to Copernicus). Though the Copernican
+              Principle is a widely accepted phenomenon, the <i>true</i> scale
+              of its physical manifestation is, at least to me, widely
+              underappreciated by most. Ergo, what better way to appreciate the
+              wonders of astrophysics and cosmology than an interactive
+              visualizer of just how small we truly are! Also, wouldn't it be
+              cool if this app could double as a way to gain a sense for the
+              differences in elements like orbital period, radial dimensions,
+              and much more within the planets of our the Solar System? You're
+              in luck. Enjoy! :).
+            </p>
+            <div className="flex flex-col items-center justify-center gap-2">
+              <ModalButton onClick={() => setShowModal(false)}>
+                Start Exploring
+              </ModalButton>
+              <p className="text-xs">
+                Made with ❤️ by Filippo Fonseca. Final project for Yale ASTR
+                170.
+              </p>
+            </div>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
       {/* Control Panel */}
       <ControlPanel>
         <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
         <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
-        <ControlButton onClick={animateScaleOut}>Auto Scale Out</ControlButton>
+        <ControlButton
+          onClick={() => {
+            setScale(1.6);
+            animateScaleOut();
+          }}
+        >
+          Auto Scale Out
+        </ControlButton>
       </ControlPanel>
 
       {/* Orbit Animation */}
@@ -290,4 +385,6 @@ export default function OrbitAnimation() {
       )}
     </>
   );
-}
+};
+
+export default OrbitAnimation;
