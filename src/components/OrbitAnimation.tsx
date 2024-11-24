@@ -142,6 +142,7 @@ const TextOverlay = styled.div`
   transform: translate(-50%, -50%);
   font-size: 2rem;
   color: white;
+  font-weight: 600;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
   text-align: center;
   pointer-events: none; /* Ensures it doesn’t interfere with user interactions */
@@ -173,6 +174,21 @@ const renderStars = (scale: number) => {
   );
 };
 
+const Label = styled.div`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -150%);
+  font-size: 1rem;
+  color: white;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 6px;
+  border-radius: 5px;
+  pointer-events: none; /* Ensures it doesn’t interfere with user interactions */
+`;
+
 const renderPlanetWithOrbit = (
   name: string,
   scale: number,
@@ -184,6 +200,7 @@ const renderPlanetWithOrbit = (
       <OrbitPath radius={orbitRadius} scale={scale} />
       <PlanetOrbit duration={orbitDuration} radius={orbitRadius}>
         <Planet size={size} color={color} />
+        <Label>{name}</Label> {/* Add the label here */}
       </PlanetOrbit>
     </React.Fragment>
   );
@@ -223,11 +240,33 @@ const ControlButton = styled.button`
 
 export default function OrbitAnimation() {
   const [scale, setScale] = React.useState(1.6);
+  const [duration, setDuration] = React.useState(100);
 
   const zoomIn = () => setScale((prev) => prev + 0.05);
   const zoomOut = () => {
     setScale((prev) => (prev > 0.05 ? prev - 0.05 : prev - 0.005));
   };
+
+  const animateScaleOut = () => {
+    setScale(1.6);
+    let currentScale = scale;
+    const interval = setInterval(() => {
+      if (currentScale <= 0.001) {
+        clearInterval(interval);
+      } else {
+        currentScale = Math.max(currentScale - 0.02, 0.001); // Decrease scale
+        setScale(currentScale);
+      }
+    }, duration);
+  };
+
+  React.useEffect(() => {
+    if (scale <= 0.4) {
+      setDuration(350);
+    } else {
+      setDuration(200);
+    }
+  }, [scale]);
 
   return (
     <>
@@ -235,6 +274,7 @@ export default function OrbitAnimation() {
       <ControlPanel>
         <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
         <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
+        <ControlButton onClick={animateScaleOut}>Auto Scale Out</ControlButton>
       </ControlPanel>
 
       {/* Orbit Animation */}
