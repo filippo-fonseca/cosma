@@ -4,7 +4,7 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 
 const EARTH_RADIUS = 10; // Earth radius in pixels
-const SUN_RADIUS = 200; // Sun radius in pixels
+const SUN_RADIUS = 175; // Sun radius in pixels
 
 type PlanetData = {
   orbitRadius: number;
@@ -13,7 +13,7 @@ type PlanetData = {
   color: string;
 };
 
-const EARTH_ORBIT_RADIUS = 150 + SUN_RADIUS; // Earth's orbit radius in million km
+const EARTH_ORBIT_RADIUS = 75 + SUN_RADIUS; // Earth's orbit radius in million km
 
 const PLANETARY_DATA: Record<string, PlanetData> = {
   Mercury: {
@@ -106,11 +106,15 @@ const OrbitContainer = styled.div<{ scale: number }>`
   justify-content: center;
 `;
 
-const OrbitPath = styled.div<{ radius: number }>`
+const OrbitPath = styled.div<{ radius: number; scale: number }>`
   position: absolute;
   width: ${(props) => props.radius * 2}px;
   height: ${(props) => props.radius * 2}px;
-  border: 2px dashed rgba(255, 255, 255, 0.5);
+  /* border: 2px dashed rgba(255, 255, 255, 0.7); */
+  border: ${(props) =>
+    props.scale > 0.4
+      ? "2px dashed rgba(255, 255, 255, 0.5)"
+      : "2px dashed white"};
   border-radius: 50%;
 `;
 
@@ -122,12 +126,13 @@ const PlanetOrbit = styled.div<{ duration: number; radius: number }>`
 
 const renderPlanetWithOrbit = (
   name: string,
+  scale: number,
   { orbitRadius, orbitPeriod, size, color }: PlanetData
 ) => {
   const orbitDuration = determineOrbitDurationInSec(orbitPeriod);
   return (
     <React.Fragment key={name}>
-      <OrbitPath radius={orbitRadius} />
+      <OrbitPath radius={orbitRadius} scale={scale} />
       <PlanetOrbit duration={orbitDuration} radius={orbitRadius}>
         <Planet size={size} color={color} />
       </PlanetOrbit>
@@ -141,6 +146,12 @@ export default function OrbitAnimation() {
   return (
     <>
       <button
+        onClick={() => setScale((prev) => Math.min(prev + 0.05, 1.4))}
+        style={{ backgroundColor: "red", zIndex: 999 }}
+      >
+        Zoom in
+      </button>
+      <button
         onClick={() => setScale((prev) => Math.max(prev - 0.05, 0.05))}
         style={{ backgroundColor: "red", zIndex: 999 }}
       >
@@ -149,7 +160,7 @@ export default function OrbitAnimation() {
       <OrbitContainer scale={scale}>
         <Sun />
         {Object.entries(PLANETARY_DATA).map(([name, data]) =>
-          renderPlanetWithOrbit(name, data)
+          renderPlanetWithOrbit(name, scale, data)
         )}
       </OrbitContainer>
     </>
