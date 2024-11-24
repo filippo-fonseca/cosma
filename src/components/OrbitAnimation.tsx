@@ -277,7 +277,7 @@ const ModalContent = styled.div`
   max-width: 500px;
 `;
 
-const ModalButton = styled.button<{ secondary: boolean }>`
+const ModalButton = styled.button<{ secondary?: boolean }>`
   margin-top: 20px;
   padding: 10px 20px;
   width: 100%;
