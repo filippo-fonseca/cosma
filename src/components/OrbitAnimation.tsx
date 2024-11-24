@@ -1,5 +1,6 @@
 "use client";
 
+import LogoIcon from "@/icons/LogoIcon";
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
@@ -266,7 +267,7 @@ const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid #242424;
+  border: 1px solid #ec4899;
   padding: 40px;
   border-radius: 10px;
   text-align: center;
@@ -276,12 +277,13 @@ const ModalContent = styled.div`
   max-width: 500px;
 `;
 
-const ModalButton = styled.button`
+const ModalButton = styled.button<{ secondary: boolean }>`
   margin-top: 20px;
   padding: 10px 20px;
-  background: white;
-  color: black;
-  border: none;
+  width: 100%;
+  background: ${(props) => (props.secondary ? "#080808" : "white")};
+  color: ${(props) => (props.secondary ? "white" : "#080808")};
+  border: ${(props) => (props.secondary ? "1px solid #242424" : "none")};
   border-radius: 5px;
   cursor: pointer;
   font-size: 12px;
@@ -328,11 +330,14 @@ const OrbitAnimation = () => {
       {showModal && (
         <ModalOverlay>
           <ModalContent>
-            <h1 className="text-3xl">
-              Welcome to <strong>cosma</strong>.
-            </h1>
+            <div className="flex flex-col items-center justify-center gap-3">
+              <LogoIcon height={50} width={50} className="fill-pink-500" />
+              <h1 className="text-3xl font-semibold">
+                Welcome to <i>cosma</i>.
+              </h1>
+            </div>
             <br />
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold text-gray-700">
               Our place in the universe is incredibly unpriviledged and mundane
               (at least according to Copernicus). Though the Copernican
               Principle is a widely accepted phenomenon, the <i>true</i> scale
@@ -345,12 +350,18 @@ const OrbitAnimation = () => {
               and much more within the planets of our the Solar System? You're
               in luck. Enjoy! :).
             </p>
-            <div className="flex flex-col items-center justify-center gap-2">
-              <ModalButton onClick={() => setShowModal(false)}>
-                Start Exploring
-              </ModalButton>
-              <p className="text-xs">
-                Made with ❤️ by Filippo Fonseca. Final project for Yale ASTR
+            <br />
+            <div className="flex flex-col items-center justify-center gap-3">
+              <div className="flex items-center justify-center gap-3 w-full">
+                <ModalButton onClick={() => setShowModal(false)}>
+                  🚀 Launch
+                </ModalButton>
+                <ModalButton onClick={() => setShowModal(false)} secondary>
+                  📜 See docs
+                </ModalButton>
+              </div>
+              <p className="text-xs font-semibold text-gray-600">
+                Made with ❤️ by Filippo Fonseca. Final project for Yale's ASTR
                 170.
               </p>
             </div>
