@@ -67,8 +67,11 @@ const PLANETARY_DATA: Record<string, PlanetData> = {
   },
 };
 
-const determineOrbitDurationInSec = (periodInDays: number) => {
-  return 10 * (periodInDays / 365); // Scaled to Earth's year as 10 seconds
+const determineOrbitDurationInSec = (
+  periodInDays: number,
+  periodScale: number
+) => {
+  return (10 * (periodInDays / 365)) / periodScale; // Adjusted by periodScale; scaled to Earth's orbital period being the base 10s at a periodScale = 1 value
 };
 
 const orbitAnimation = (orbitRadius: number) => keyframes`
@@ -149,12 +152,16 @@ const TextOverlay = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2rem;
+  font-size: 1.7rem;
   color: white;
   font-weight: 600;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+
+  span,
+  p {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  }
+
   text-align: center;
-  pointer-events: none; /* Ensures it doesn’t interfere with user interactions */
 `;
 
 const renderStars = (scale: number) => {
@@ -176,8 +183,31 @@ const renderStars = (scale: number) => {
     <>
       {stars}
       <TextOverlay>
-        don't take things too seriously. remember, we are seriously
-        insignificant.
+        <div className="flex flex-col items-center justify-center gap-3">
+          <span>
+            🪐 don't take things too seriously. remember, we are seriously
+            insignificant in our own solar system (much worse in the Universe).
+          </span>
+          <h6 className="text-sm text-gray-700">
+            <i>every</i> interaction. <i>every</i> person. <i>every</i>{" "}
+            instance. <i>every</i> thing you have ever known if a mere speck
+            within a larger spech, which itself is a speck within a field of
+            specks in a larger speck within many more specks. what a beauty.
+            let's continue to try to understand more about our place within the
+            specks through astrophysics, cosmology, and science as a whole. what
+            we have done so far is truly remarkable; i'm excited to see what we
+            can discover next!{" "}
+          </h6>
+        </div>
+        <br />
+        <div className="flex flex-col items-center justify-center gap-4">
+          <SecondaryModalButton onClick={() => null} style={{ width: 200 }}>
+            📜 See docs
+          </SecondaryModalButton>
+          <p className="text-xs font-semibold text-gray-600">
+            Made with ❤️ by Filippo Fonseca. Final project for Yale's ASTR 170.
+          </p>
+        </div>
       </TextOverlay>
     </>
   );
@@ -201,9 +231,10 @@ const Label = styled.div`
 const renderPlanetWithOrbit = (
   name: string,
   scale: number,
+  periodScale: number,
   { orbitRadius, orbitPeriod, size, color }: PlanetData
 ) => {
-  const orbitDuration = determineOrbitDurationInSec(orbitPeriod);
+  const orbitDuration = determineOrbitDurationInSec(orbitPeriod, periodScale);
   return (
     <React.Fragment key={name}>
       <OrbitPath radius={orbitRadius} scale={scale} />
@@ -248,6 +279,24 @@ const ControlButton = styled.button`
   }
 `;
 
+const Slider = styled.input`
+  width: 100%;
+  appearance: none;
+  height: 5px;
+  background: #444;
+  border-radius: 5px;
+  outline: none;
+  transition: background 0.2s;
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+`;
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -277,13 +326,30 @@ const ModalContent = styled.div`
   max-width: 500px;
 `;
 
-const ModalButton = styled.button<{ secondary?: boolean }>`
+const ModalButton = styled.button`
   margin-top: 20px;
   padding: 10px 20px;
   width: 100%;
-  background: ${(props) => (props.secondary ? "#080808" : "white")};
-  color: ${(props) => (props.secondary ? "white" : "#080808")};
-  border: ${(props) => (props.secondary ? "1px solid #242424" : "none")};
+  background: white;
+  color: #080808;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+
+  &:hover {
+    background: #444;
+  }
+`;
+
+const SecondaryModalButton = styled.button`
+  margin-top: 20px;
+  padding: 10px 20px;
+  width: 100%;
+  background: #080808;
+  color: white;
+  border: 1px solid #242424;
   border-radius: 5px;
   cursor: pointer;
   font-size: 12px;
@@ -297,6 +363,7 @@ const ModalButton = styled.button<{ secondary?: boolean }>`
 const OrbitAnimation = () => {
   const [scale, setScale] = React.useState(1.6);
   const [duration, setDuration] = React.useState(100);
+  const [periodScale, setPeriodScale] = React.useState(1); // State for the period scale
   const [showModal, setShowModal] = React.useState(true); // State to show/hide modal
 
   const zoomIn = () => setScale((prev) => prev + 0.05);
@@ -323,6 +390,10 @@ const OrbitAnimation = () => {
       setDuration(200);
     }
   }, [scale]);
+
+  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPeriodScale(parseFloat(event.target.value));
+  };
 
   return (
     <>
@@ -356,9 +427,9 @@ const OrbitAnimation = () => {
                 <ModalButton onClick={() => setShowModal(false)}>
                   🚀 Launch
                 </ModalButton>
-                <ModalButton onClick={() => setShowModal(false)} secondary>
+                <SecondaryModalButton onClick={() => setShowModal(false)}>
                   📜 See docs
-                </ModalButton>
+                </SecondaryModalButton>
               </div>
               <p className="text-xs font-semibold text-gray-600">
                 Made with ❤️ by Filippo Fonseca. Final project for Yale's ASTR
@@ -370,25 +441,41 @@ const OrbitAnimation = () => {
       )}
 
       {/* Control Panel */}
-      <ControlPanel>
-        <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
-        <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
-        <ControlButton
-          onClick={() => {
-            setScale(1.6);
-            animateScaleOut();
-          }}
-        >
-          Auto Scale Out
-        </ControlButton>
-      </ControlPanel>
+      {scale > 0.001 && (
+        <ControlPanel>
+          <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
+          <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
+          <ControlButton
+            onClick={() => {
+              setScale(1.6);
+              animateScaleOut();
+            }}
+          >
+            Auto Scale Out
+          </ControlButton>
+          <div>
+            <label htmlFor="periodScaleSlider">
+              Period Scale: {periodScale.toFixed(1)}x
+            </label>
+            <Slider
+              id="periodScaleSlider"
+              type="range"
+              min="0.1"
+              max="10"
+              step="0.1"
+              value={periodScale}
+              onChange={handleSliderChange}
+            />
+          </div>
+        </ControlPanel>
+      )}
 
       {/* Orbit Animation */}
       {scale > 0.001 ? (
         <OrbitContainer scale={scale}>
           <Sun />
           {Object.entries(PLANETARY_DATA).map(([name, data]) =>
-            renderPlanetWithOrbit(name, scale, data)
+            renderPlanetWithOrbit(name, scale, periodScale, data)
           )}
         </OrbitContainer>
       ) : (
