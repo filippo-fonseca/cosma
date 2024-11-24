@@ -111,7 +111,10 @@ const OrbitPath = styled.div<{ radius: number; scale: number }>`
   position: absolute;
   width: ${(props) => props.radius * 2}px;
   height: ${(props) => props.radius * 2}px;
-  border: 2px dashed rgba(255, 255, 255, 0.7);
+  border: ${(props) =>
+    props.scale > 0.4
+      ? "2px dashed rgba(255, 255, 255, 0.7)"
+      : "2px dashed white"};
   border-radius: 50%;
 `;
 
@@ -165,32 +168,55 @@ const renderPlanetWithOrbit = (
   );
 };
 
+const ControlPanel = styled.div`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999; /* Ensures it is above other elements */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+`;
+
+const ControlButton = styled.button`
+  padding: 5px 10px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #666;
+  }
+
+  &:active {
+    background: #222;
+  }
+`;
+
 export default function OrbitAnimation() {
   const [scale, setScale] = React.useState(1);
 
+  const zoomIn = () => setScale((prev) => prev + 0.05);
+  const zoomOut = () => {
+    setScale((prev) => (prev > 0.05 ? prev - 0.05 : prev - 0.005));
+  };
+
   return (
     <>
-      <button
-        onClick={() => setScale((prev) => prev + 0.05)}
-        style={{ position: "absolute", top: 20, left: 20, zIndex: 999 }}
-      >
-        Zoom in
-      </button>
-      <button
-        onClick={() =>
-          setScale((prev) => {
-            if (prev > 0.05) {
-              return prev - 0.05;
-            } else {
-              return prev - 0.005;
-            }
-          })
-        }
-        style={{ position: "absolute", top: 60, left: 20, zIndex: 999 }}
-      >
-        Zoom out
-      </button>
+      {/* Control Panel */}
+      <ControlPanel>
+        <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
+        <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
+      </ControlPanel>
 
+      {/* Orbit Animation */}
       {scale > 0.001 ? (
         <OrbitContainer scale={scale}>
           <Sun />
