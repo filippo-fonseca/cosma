@@ -132,7 +132,13 @@ const Star = styled.div<{ x: number; y: number; size: number }>`
   opacity: 0.8;
 `;
 
-const renderStars = () => {
+const renderStars = (scale) => {
+  let amount;
+
+  if (scale == 0.001) amount = 10;
+
+  if (scale < 0.001) amount = 500;
+
   const stars = [];
   for (let i = 0; i < 500; i++) {
     const x = Math.random() * 100;
@@ -193,7 +199,7 @@ export default function OrbitAnimation() {
           )}
         </OrbitContainer>
       ) : (
-        renderStars()
+        renderStars(scale)
       )}
     </>
   );
