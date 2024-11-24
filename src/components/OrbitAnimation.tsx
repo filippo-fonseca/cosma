@@ -2,6 +2,16 @@
 
 import styled, { keyframes } from "styled-components";
 
+const EARTH_ORBIT_DAYS = 365;
+
+const EARTH_RADIUS = 40;
+
+const MARS_ORBIT_DAYS = 687;
+
+const determineOrbitDurationInSec = (periodInYears: number) => {
+  return 10 * (periodInYears / EARTH_ORBIT_DAYS);
+};
+
 const orbitAnimation = keyframes`
   0% {
     transform: rotate(0deg) translateX(200px) rotate(0deg);
@@ -20,9 +30,17 @@ const Sun = styled.div`
 `;
 
 const Earth = styled.div`
-  width: 40px;
-  height: 40px;
+  height: ${EARTH_RADIUS}px;
+  width: ${EARTH_RADIUS}px;
   background: blue;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 0, 255, 0.8);
+`;
+
+const Mars = styled.div`
+  height: ${0.53 * EARTH_RADIUS}px;
+  width: ${0.53 * EARTH_RADIUS}px;
+  background: red;
   border-radius: 50%;
   box-shadow: 0 0 20px rgba(0, 0, 255, 0.8);
 `;
@@ -46,7 +64,14 @@ const OrbitPath = styled.div`
 
 const EarthOrbit = styled.div`
   position: absolute;
-  animation: ${orbitAnimation} 10s linear infinite;
+  animation: ${orbitAnimation} ${determineOrbitDurationInSec(EARTH_ORBIT_DAYS)}s
+    linear infinite;
+`;
+
+const MarsOrbit = styled.div`
+  position: absolute;
+  animation: ${orbitAnimation} ${determineOrbitDurationInSec(MARS_ORBIT_DAYS)}s
+    linear infinite;
 `;
 
 export default function OrbitAnimation() {
@@ -57,6 +82,9 @@ export default function OrbitAnimation() {
       <EarthOrbit>
         <Earth />
       </EarthOrbit>
+      <MarsOrbit>
+        <Mars />
+      </MarsOrbit>
     </OrbitContainer>
   );
 }
