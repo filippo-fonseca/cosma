@@ -17,51 +17,51 @@ const EARTH_ORBIT_RADIUS = 75 + SUN_RADIUS; // Earth's orbit radius in million k
 
 const PLANETARY_DATA: Record<string, PlanetData> = {
   Mercury: {
-    orbitRadius: 0.39 * EARTH_ORBIT_RADIUS, // 57.9 / 149.6
-    orbitPeriod: 88, // in Earth days
-    size: 0.45 * EARTH_RADIUS, // relative to Earth's radius
+    orbitRadius: 0.39 * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 88,
+    size: 0.45 * EARTH_RADIUS,
     color: "gray",
   },
   Venus: {
-    orbitRadius: 0.72 * EARTH_ORBIT_RADIUS, // 108.2 / 149.6
-    orbitPeriod: 225, // in Earth days
-    size: 0.95 * EARTH_RADIUS, // relative to Earth's radius
+    orbitRadius: 0.72 * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 225,
+    size: 0.95 * EARTH_RADIUS,
     color: "yellow",
   },
   Earth: {
-    orbitRadius: 1 * EARTH_ORBIT_RADIUS, // Earth is the reference
-    orbitPeriod: 365, // in Earth days
+    orbitRadius: 1 * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 365,
     size: EARTH_RADIUS,
     color: "blue",
   },
   Mars: {
-    orbitRadius: 1.52 * EARTH_ORBIT_RADIUS, // 227.9 / 149.6
-    orbitPeriod: 687, // in Earth days
-    size: 0.53 * EARTH_RADIUS, // relative to Earth's radius
+    orbitRadius: 1.52 * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 687,
+    size: 0.53 * EARTH_RADIUS,
     color: "red",
   },
   Jupiter: {
-    orbitRadius: (5.2 / 2) * EARTH_ORBIT_RADIUS, // 778.3 / 149.6
-    orbitPeriod: 4331, // in Earth days
-    size: (11.2 / 2) * EARTH_RADIUS, // relative to Earth's radius
+    orbitRadius: (5.2 / 2) * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 4331,
+    size: (11.2 / 2) * EARTH_RADIUS,
     color: "orange",
   },
   Saturn: {
-    orbitRadius: (9.54 / 2) * EARTH_ORBIT_RADIUS, // 1427 / 149.6
-    orbitPeriod: 10747, // in Earth days
-    size: (9.45 / 2) * EARTH_RADIUS, // relative to Earth's radius
+    orbitRadius: (9.54 / 2) * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 10747,
+    size: (9.45 / 2) * EARTH_RADIUS,
     color: "gold",
   },
   Uranus: {
-    orbitRadius: (19.2 / 2) * EARTH_ORBIT_RADIUS, // 2871 / 149.6
-    orbitPeriod: 30589, // in Earth days
-    size: (4.01 / 2) * EARTH_RADIUS, // relative to Earth's radius
+    orbitRadius: (19.2 / 2) * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 30589,
+    size: (4.01 / 2) * EARTH_RADIUS,
     color: "lightblue",
   },
   Neptune: {
-    orbitRadius: (30.1 / 2) * EARTH_ORBIT_RADIUS, // 4497.1 / 149.6
-    orbitPeriod: 59800, // in Earth days
-    size: (3.88 / 2) * EARTH_RADIUS, // relative to Earth's radius
+    orbitRadius: (30.1 / 2) * EARTH_ORBIT_RADIUS,
+    orbitPeriod: 59800,
+    size: (3.88 / 2) * EARTH_RADIUS,
     color: "darkblue",
   },
 };
@@ -104,17 +104,14 @@ const OrbitContainer = styled.div<{ scale: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: black;
 `;
 
 const OrbitPath = styled.div<{ radius: number; scale: number }>`
   position: absolute;
   width: ${(props) => props.radius * 2}px;
   height: ${(props) => props.radius * 2}px;
-  /* border: 2px dashed rgba(255, 255, 255, 0.7); */
-  border: ${(props) =>
-    props.scale > 0.4
-      ? "2px dashed rgba(255, 255, 255, 0.5)"
-      : "2px dashed white"};
+  border: 2px dashed rgba(255, 255, 255, 0.7);
   border-radius: 50%;
 `;
 
@@ -123,6 +120,28 @@ const PlanetOrbit = styled.div<{ duration: number; radius: number }>`
   animation: ${(props) => orbitAnimation(props.radius)}
     ${(props) => props.duration}s linear infinite;
 `;
+
+const Star = styled.div<{ x: number; y: number; size: number }>`
+  position: absolute;
+  top: ${(props) => props.y}%;
+  left: ${(props) => props.x}%;
+  width: ${(props) => props.size}px;
+  height: ${(props) => props.size}px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+`;
+
+const renderStars = () => {
+  const stars = [];
+  for (let i = 0; i < 500; i++) {
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const size = Math.random() * 2 + 1;
+    stars.push(<Star key={i} x={x} y={y} size={size} />);
+  }
+  return stars;
+};
 
 const renderPlanetWithOrbit = (
   name: string,
@@ -146,23 +165,36 @@ export default function OrbitAnimation() {
   return (
     <>
       <button
-        onClick={() => setScale((prev) => Math.min(prev + 0.05, 1.4))}
-        style={{ backgroundColor: "red", zIndex: 999 }}
+        onClick={() => setScale((prev) => prev + 0.05)}
+        style={{ position: "absolute", top: 20, left: 20, zIndex: 999 }}
       >
         Zoom in
       </button>
       <button
-        onClick={() => setScale((prev) => Math.max(prev - 0.05, 0.05))}
-        style={{ backgroundColor: "red", zIndex: 999 }}
+        onClick={() =>
+          setScale((prev) => {
+            if (prev > 0.05) {
+              return prev - 0.05;
+            } else {
+              return prev - 0.005;
+            }
+          })
+        }
+        style={{ position: "absolute", top: 60, left: 20, zIndex: 999 }}
       >
         Zoom out
       </button>
-      <OrbitContainer scale={scale}>
-        <Sun />
-        {Object.entries(PLANETARY_DATA).map(([name, data]) =>
-          renderPlanetWithOrbit(name, scale, data)
-        )}
-      </OrbitContainer>
+
+      {scale > 0.001 ? (
+        <OrbitContainer scale={scale}>
+          <Sun />
+          {Object.entries(PLANETARY_DATA).map(([name, data]) =>
+            renderPlanetWithOrbit(name, scale, data)
+          )}
+        </OrbitContainer>
+      ) : (
+        renderStars()
+      )}
     </>
   );
 }
