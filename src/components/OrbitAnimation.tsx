@@ -135,7 +135,19 @@ const Star = styled.div<{ x: number; y: number; size: number }>`
   opacity: 0.8;
 `;
 
-const renderStars = (scale) => {
+const TextOverlay = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  text-align: center;
+  pointer-events: none; /* Ensures it doesn’t interfere with user interactions */
+`;
+
+const renderStars = (scale: number) => {
   let amount;
 
   if (scale == 0.001) amount = 10;
@@ -149,7 +161,16 @@ const renderStars = (scale) => {
     const size = Math.random() * 2 + 1;
     stars.push(<Star key={i} x={x} y={y} size={size} />);
   }
-  return stars;
+
+  return (
+    <>
+      {stars}
+      <TextOverlay>
+        don't take things too seriously. remember, we are seriously
+        insignificant.
+      </TextOverlay>
+    </>
+  );
 };
 
 const renderPlanetWithOrbit = (
@@ -201,7 +222,7 @@ const ControlButton = styled.button`
 `;
 
 export default function OrbitAnimation() {
-  const [scale, setScale] = React.useState(1);
+  const [scale, setScale] = React.useState(1.6);
 
   const zoomIn = () => setScale((prev) => prev + 0.05);
   const zoomOut = () => {
