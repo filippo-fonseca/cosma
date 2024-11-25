@@ -219,6 +219,7 @@ const Label = styled.div`
   left: 50%;
   transform: translate(-50%, -150%);
   font-size: 1rem;
+  font-weight: 600;
   color: white;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
     0 0 10px rgba(255, 255, 255, 0.5);
@@ -246,6 +247,24 @@ const renderPlanetWithOrbit = (
   );
 };
 
+const LogoPanel = styled.div`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 999; /* Ensures it is above other elements */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  background-color: #0a0a0a;
+  border: 1px solid #242424;
+`;
+
 const ControlPanel = styled.div`
   position: fixed;
   top: 20px;
@@ -253,19 +272,20 @@ const ControlPanel = styled.div`
   z-index: 999; /* Ensures it is above other elements */
   color: white;
   padding: 10px 15px;
+  border: 1px solid #242424;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #0a0a0a;
 `;
 
 const ControlButton = styled.button`
   padding: 5px 10px;
-  background: #444;
+  background: #090909;
   color: white;
-  border: none;
+  border: 1px solid #242424;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -442,32 +462,38 @@ const OrbitAnimation = () => {
 
       {/* Control Panel */}
       {scale > 0.001 && (
-        <ControlPanel>
-          <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
-          <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
-          <ControlButton
-            onClick={() => {
-              setScale(1.6);
-              animateScaleOut();
-            }}
-          >
-            Auto Scale Out
-          </ControlButton>
-          <div>
-            <label htmlFor="periodScaleSlider">
-              Period Scale: {periodScale.toFixed(1)}x
-            </label>
-            <Slider
-              id="periodScaleSlider"
-              type="range"
-              min="0.1"
-              max="10"
-              step="0.1"
-              value={periodScale}
-              onChange={handleSliderChange}
-            />
-          </div>
-        </ControlPanel>
+        <>
+          <LogoPanel>
+            <LogoIcon width={20} height={20} className="fill-pink-500" />
+            <h1 className="text-xl">cosma</h1>
+          </LogoPanel>
+          <ControlPanel>
+            <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
+            <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
+            <ControlButton
+              onClick={() => {
+                setScale(1.6);
+                animateScaleOut();
+              }}
+            >
+              Auto Scale Out
+            </ControlButton>
+            <div>
+              <label htmlFor="periodScaleSlider">
+                Orbital speed: {periodScale.toFixed(1)}x
+              </label>
+              <Slider
+                id="periodScaleSlider"
+                type="range"
+                min="0.1"
+                max="10"
+                step="0.1"
+                value={periodScale}
+                onChange={handleSliderChange}
+              />
+            </div>
+          </ControlPanel>
+        </>
       )}
 
       {/* Orbit Animation */}
