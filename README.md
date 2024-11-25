@@ -1,37 +1,5 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<img src="https://i.ibb.co/4Pt3vh5/Screenshot-2024-11-24-at-9-33-47-PM.png" />
 
-## Getting Started
+Our place in the universe is incredibly unpriviledged and mundane (at least according to Copernicus). Though the Copernican Principle is a widely accepted phenomenon, the true scale of its physical manifestation is, at least to me, widely underappreciated by most. Ergo, what better way to appreciate the wonders of astrophysics and cosmology than an interactive visualizer of just how small we truly are! Also, wouldn't it be cool if this app could double as a way to gain a sense for the differences in elements like orbital period, radial dimensions, and much more within the planets of our the solar system? You're in luck. Enjoy! :).
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# cosma
+Made with ❤️ by Filippo Fonseca for Yale's ASTR 170 class (Prof: Dr. Natarajan).
