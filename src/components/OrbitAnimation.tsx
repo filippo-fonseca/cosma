@@ -439,7 +439,7 @@ const OrbitAnimation = () => {
             </div>
             <br />
             <p className="text-sm font-semibold text-gray-700">
-              Our place in the universe is incredibly unpriviledged and mundane
+              Our place in the universe is incredibly unprivileged and mundane
               (at least according to Copernicus). Though the Copernican
               Principle is a widely accepted phenomenon, the <i>true</i> scale
               of its physical manifestation is, at least to me, widely
