@@ -197,7 +197,7 @@ const renderStars = (scale: number) => {
           </span>
           <h6 className="text-sm text-gray-700">
             <i>every</i> interaction. <i>every</i> person. <i>every</i>{" "}
-            instance. <i>every</i> thing you have ever known if a mere speck
+            instance. <i>every</i> thing you have ever known is but a mere speck
             within a larger spech, which itself is a speck within a field of
             specks in a larger speck within many more specks. what a beauty.
             let's continue to try to understand more about our place within the
