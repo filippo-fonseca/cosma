@@ -1,6 +1,9 @@
 "use client";
 
 import LogoIcon from "@/icons/LogoIcon";
+import MinusIcon from "@/icons/MinusIcon";
+import PlayIcon from "@/icons/PlayIcon";
+import PlusIcon from "@/icons/PlusIcon";
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
@@ -94,17 +97,21 @@ const Sun = styled.div`
     #e06317 100%
   );
   border-radius: 50%;
-  box-shadow: 0 0 50px rgba(255, 223, 0, 0.8);
-  box-shadow: 0 0 10px 2px rgba(255, 107, 0, 0.4),
-    0 0 22px 11px rgba(255, 203, 0, 0.13);
+  box-shadow: 0 0 1000px rgba(255, 223, 0, 0.8);
 `;
+
+const getShadowColor = (color: string) => {
+  // If color is in RGB or HEX, you'll need additional logic to convert it to RGBA.
+  // For simplicity, this assumes `color` is in a valid CSS color format.
+  return color.replace(/[^,]+(?=\))/, "0.8"); // Append alpha to RGBA if necessary
+};
 
 const Planet = styled.div<{ size: number; color: string }>`
   height: ${(props) => props.size}px;
   width: ${(props) => props.size}px;
   background: ${(props) => props.color};
   border-radius: 50%;
-  box-shadow: 0 0 20px rgba(0, 0, 255, 0.8);
+  box-shadow: 0 0 20px ${(props) => getShadowColor(props.color)};
 `;
 
 const OrbitContainer = styled.div<{ scale: number }>`
@@ -282,12 +289,15 @@ const ControlPanel = styled.div`
 `;
 
 const ControlButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 5px 10px;
   background: #090909;
   color: white;
   border: 1px solid #242424;
   border-radius: 5px;
-  cursor: pointer;
   transition: background 0.2s ease;
 
   &:hover {
@@ -438,7 +448,7 @@ const OrbitAnimation = () => {
               visualizer of just how small we truly are! Also, wouldn't it be
               cool if this app could double as a way to gain a sense for the
               differences in elements like orbital period, radial dimensions,
-              and much more within the planets of our the Solar System? You're
+              and much more within the planets of our the solar system? You're
               in luck. Enjoy! :).
             </p>
             <br />
@@ -468,25 +478,47 @@ const OrbitAnimation = () => {
             <h1 className="text-xl">cosma</h1>
           </LogoPanel>
           <ControlPanel>
-            <ControlButton onClick={zoomIn}>Zoom In</ControlButton>
-            <ControlButton onClick={zoomOut}>Zoom Out</ControlButton>
+            <div className="flex items-center justify-left gap-3">
+              <PlusIcon
+                onClick={zoomIn}
+                height={30}
+                width={30}
+                className="fill-pink-500 cursor-pointer hover:opacity-50"
+              />
+              <MinusIcon
+                onClick={zoomOut}
+                height={30}
+                width={30}
+                className="fill-pink-500 cursor-pointer hover:opacity-50"
+              />
+            </div>
             <ControlButton
               onClick={() => {
                 setScale(1.6);
                 animateScaleOut();
               }}
+              disabled={scale !== 1.6}
+              className={`${
+                scale !== 1.6
+                  ? "opacity-50 cursor-not-allowed"
+                  : "opacity-1 cursor-pointer"
+              }`}
             >
-              Auto Scale Out
+              <PlayIcon height={15} width={15} className="fill-white" />
+              <p className="font-bold text-xs">Auto play zoom-out</p>
             </ControlButton>
             <div>
-              <label htmlFor="periodScaleSlider">
+              <label
+                htmlFor="periodScaleSlider"
+                className="text-sm font-semibold"
+              >
                 Orbital speed: {periodScale.toFixed(1)}x
               </label>
               <Slider
                 id="periodScaleSlider"
                 type="range"
                 min="0.1"
-                max="10"
+                max="3"
                 step="0.1"
                 value={periodScale}
                 onChange={handleSliderChange}

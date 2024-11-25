@@ -2,6 +2,8 @@
 
 import React from "react";
 import OrbitAnimation from "../components/OrbitAnimation";
+import VolumeOnIcon from "@/icons/VolumeOnIcon";
+import VolumeOffIcon from "@/icons/VolumeOffIcon";
 
 export default function Home() {
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -20,10 +22,16 @@ export default function Home() {
     <main className="flex items-center justify-center h-screen bg-black">
       <OrbitAnimation />
       <div
-        className="absolute bottom-3 left-3 rounded-full p-4"
+        className={`absolute bottom-3 left-3 rounded-full hover:opacity-50 p-4 ${
+          isPlaying ? "bg-pink-500" : "bg-pink-300"
+        } cursor-pointer`}
         onClick={toggleMusic}
       >
-        Click
+        {isPlaying ? (
+          <VolumeOnIcon width={15} height={15} fill="white" />
+        ) : (
+          <VolumeOffIcon width={15} height={15} className="fill-pink-50" />
+        )}
       </div>
       <audio ref={audioRef} loop>
         <source src="/interstellar.mp3" type="audio/mpeg" />
