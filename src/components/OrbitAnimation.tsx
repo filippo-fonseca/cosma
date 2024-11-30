@@ -193,7 +193,7 @@ const renderStars = (scale: number) => {
         <div className="flex flex-col items-center justify-center gap-3">
           <span>
             🪐 don't take things too seriously. remember, we are seriously
-            insignificant in our own solar system (much worse in the Universe).
+            insignificant in our own solar system (even more so in the Universe).
           </span>
           <h6 className="text-sm text-gray-700">
             <i>every</i> interaction. <i>every</i> person. <i>every</i>{" "}
